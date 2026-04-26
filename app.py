@@ -10,12 +10,14 @@ except ImportError:
 
 from flaskapp import create_app
 
-from flaskapp.config import DevelopmentConfig, ProductionConfig
+from flaskapp.config import DevelopmentConfig, ProductionConfig, RailwayConfig
 
 import os
 
-# Use production config in production environment, development config otherwise
-if os.environ.get("RENDER"):
+# Use appropriate config based on platform
+if os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_SERVICE_NAME"):
+    app = create_app(config_class=RailwayConfig)
+elif os.environ.get("RENDER"):
     app = create_app(config_class=ProductionConfig)
 else:
     app = create_app(config_class=DevelopmentConfig)

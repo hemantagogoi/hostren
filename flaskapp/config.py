@@ -24,6 +24,24 @@ class DevelopmentConfig(Config):
     ENV = "development"
 
 
+class RailwayConfig(Config):
+    SECRET_KEY = os.environ.get("SECRET_KEY", "railway-secret-key")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    DEBUG = False
+    ENV = "production"
+    
+    def __init__(self):
+        super().__init__()
+        # Railway provides DATABASE_URL environment variable
+        database_url = os.environ.get("DATABASE_URL")
+        if not database_url:
+            raise ValueError("DATABASE_URL environment variable is required for Railway deployment")
+        # Convert postgresql:// to postgresql+psycopg2:// if needed
+        if database_url.startswith("postgresql://"):
+            database_url = database_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        self.SQLALCHEMY_DATABASE_URI = database_url
+
+
 class TestingConfig(Config):
     SECRET_KEY = "166839997171300f4a1f899733c043e20d1758d3595ff0c8"
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/flaskapp_test")

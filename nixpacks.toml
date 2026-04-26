@@ -1,0 +1,25 @@
+# Nixpacks configuration for Railway deployment
+
+[phases.setup]
+nixPkgs = ["python311", "postgresql"]
+
+[phases.install]
+cmds = [
+    "python -m venv /opt/venv",
+    ". /opt/venv/bin/activate",
+    "pip install --upgrade pip",
+    "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+    ". /opt/venv/bin/activate",
+    "pip install -r requirements.txt"
+]
+
+[start]
+cmd = ". /opt/venv/bin/activate && chmod +x start.sh && ./start.sh"
+
+[variables]
+PYTHON_VERSION = "3.11"
+PORT = "8080"
