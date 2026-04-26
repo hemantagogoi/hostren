@@ -17,7 +17,6 @@ fi
 echo "⏳ Waiting for database connection..."
 python -c "
 import time
-import psycopg2
 import os
 from urllib.parse import urlparse
 
@@ -25,10 +24,14 @@ def wait_for_db():
     db_url = os.environ.get('DATABASE_URL')
     if not db_url:
         print('❌ DATABASE_URL not found in environment variables')
-        print('Available env vars:', [k for k in os.environ.keys() if 'DB' in k.upper() or 'DATABASE' in k.upper()])
+        print('Please add PostgreSQL service in Railway and set DATABASE_URL')
         return False
     
     print(f'📡 Database URL found: {db_url.split(\"@\")[1] if \"@\" in db_url else \"URL found\"}')
+    
+    # Convert postgres:// to postgresql:// if needed
+    if db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
     
     parsed = urlparse(db_url)
     max_retries = 30
@@ -36,6 +39,7 @@ def wait_for_db():
     
     while retry_count < max_retries:
         try:
+            import psycopg2
             conn = psycopg2.connect(
                 host=parsed.hostname,
                 port=parsed.port or 5432,
