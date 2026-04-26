@@ -19,7 +19,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     SECRET_KEY = "166839997171300f4a1f899733c043e20d1758d3595ff0c8"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/flaskapp")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     DEBUG = True
     ENV = "development"
 
@@ -45,7 +45,7 @@ class RailwayConfig(Config):
 
 class TestingConfig(Config):
     SECRET_KEY = "166839997171300f4a1f899733c043e20d1758d3595ff0c8"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/flaskapp_test")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     TESTING = True
     WTF_CSRF_ENABLED = False
 
