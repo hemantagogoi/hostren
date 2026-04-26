@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block links %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/users/dashboard.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animations.css') }}"/>
+{% endblock links %}
+
+{% block header %}
+<h1 class="header">Recent</h1>
+{% endblock header %}
+
+{% block special_side_links %}
+  <a class="side_navigation_items" href={{ url_for("courses.all_courses") }} >Courses</a>
+{% endblock special_side_links %}
+
+{% block flashes %}
+{% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+<ul class="flashes flashes_question">
+    {% for category, message in messages %}
+    <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %} {% endwith %}
+{% endblock flashes %}
+
+{% block main %}
+   {% if papers %}
+<div id="paper_container">
+   {% for paper in papers.items %}
+   <div class="papers">
+       <div class="paper_fields">
+           Paper : {{paper.name}}
+       </div>
+       <div class="paper_fields">
+           Exam Date : {{paper.exam_date}}
+       </div>
+       <div class="paper_fields">
+           Term : {{paper.term}}
+       </div>
+       <div class="paper_fields">
+           Marks : {{paper.mark}}
+       </div>
+       <div class="links"><a href='{{url_for("papers.pdf_paper",paper_id = paper.id)}}' target="_blank">View Paper</a></div>
+   </div>
+   {% endfor %}
+</div>
+<div id="pagination">
+   {% for page_num in papers.iter_pages(left_edge=1,
+                                                right_edge=1,
+                                                left_current=1,
+                                                right_current=2) %}
+   {% if page_num %}
+    {% if papers.page == page_num %}
+    <a class="btn btn-info mb-4"
+        href="{{ url_for('papers.home',page=page_num) }}">{{ page_num }}</a>
+    {% else %}
+    <a class="btn btn-outline-info mb-4"
+        href="{{ url_for('papers.home',page=page_num) }}">{{ page_num }}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+   {% endfor %}
+</div>
+   {% endif %}
+{% endblock main %}
+
+{% block sideNav %}
+<div class="ml-4" id="home_nav">
+    <a class="row pl-2" id="manage_courses_btn" href={{ url_for("courses.all_courses") }}>
+        <h1 class="px-3 py-1">C</h1>
+        <div class="col">
+            <h3>Manage</h3>
+            <h5>Courses</h5>
+        </div>
+    </a>
+</div>
+{% endblock sideNav %}

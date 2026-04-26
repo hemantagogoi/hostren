@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Add New Unit - {{ subject.name }}</h2>
+    <form method="POST" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div class="form-group" style="flex: 1;">
+            <label for="chapter_no">Unit Number</label>
+            <input type="number" id="chapter_no" name="chapter_no" min="1" required>
+        </div>
+        <div class="form-group" style="flex: 3;">
+            <label for="name">Unit Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Introduction to Programming">
+        </div>
+        <button type="submit" class="btn btn-success">Add Unit</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Existing Units - {{ subject.name }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Unit No</th>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for unit in units %}
+            <tr>
+                <td>{{ unit.chapter_no }}</td>
+                <td>{{ unit.name or 'N/A' }}</td>
+                <td>
+                    <a href="{{ url_for('admin.manage_questions', unit_id=unit.id) }}" class="btn btn-primary">Questions</a>
+                    <a href="{{ url_for('admin.delete_unit', unit_id=unit.id) }}" 
+                       class="btn btn-danger" 
+                       onclick="return confirm('Delete this unit?');">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="3" style="text-align: center; color: #666;">No units found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div style="margin-top: 1rem;">
+    <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-secondary">&larr; Back to Subjects</a>
+</div>
+{% endblock %}

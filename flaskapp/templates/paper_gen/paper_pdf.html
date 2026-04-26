@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ paper.name }}</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+            margin: 2cm;
+            color: #000;
+        }
+        .paper-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .college-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .paper-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .exam-info {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .instructions {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border: 1px solid #000;
+        }
+        .instructions h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+        .instructions ol {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+        .instructions li {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .section {
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            background: #f0f0f0;
+            padding: 0.5rem;
+            font-weight: bold;
+            border: 1px solid #000;
+            margin-bottom: 0.5rem;
+        }
+        .question {
+            margin-bottom: 1rem;
+            page-break-inside: avoid;
+        }
+        .question-number {
+            font-weight: bold;
+        }
+        .question-text {
+            margin-left: 1.5rem;
+        }
+        .marks {
+            float: right;
+            font-weight: normal;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid #000;
+            padding-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-header">
+        <div class="college-name">COLLEGE QUESTION PAPER</div>
+        <div class="paper-title">{{ paper.name }}</div>
+        <div class="exam-info"><strong>{{ paper.term }}</strong></div>
+        <div class="exam-info">Subject: {{ subject.name }}</div>
+        <div class="exam-info">Time Allowed: {{ paper.time_limit }} | Maximum Marks: {{ paper.mark }}</div>
+        <div class="exam-info">Date: {{ paper.exam_date }}</div>
+    </div>
+
+    <div class="instructions">
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Write your name and roll number in the space provided.</li>
+            <li>Read all questions carefully before answering.</li>
+            <li>All questions are compulsory unless stated otherwise.</li>
+            <li>Write your answers legibly.</li>
+            <li>No electronic devices are allowed.</li>
+        </ol>
+    </div>
+
+    {% for mark, questions in questions_by_mark.items() %}
+    <div class="section">
+        <div class="section-title">
+            Section ({{ mark }} Mark Questions)
+            <span class="marks">{{ questions|length }} x {{ mark }} = {{ questions|length * mark }} Marks</span>
+        </div>
+        {% for q in questions %}
+        <div class="question">
+            <span class="question-number">Q{{ loop.index }}.</span>
+            <span class="question-text">{{ q.question.question }} <span class="marks">[{{ mark }}]</span></span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="footer">
+        <p>*** All the Best ***</p>
+    </div>
+</body>
+</html>

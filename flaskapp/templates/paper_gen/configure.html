@@ -1,0 +1,64 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}Configure Paper{% endblock %}
+{% block header_title %}Configure Paper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="progress-bar">
+        <div class="step completed">1</div>
+        <div class="step completed">2</div>
+        <div class="step completed">3</div>
+        <div class="step completed">4</div>
+        <div class="step active">5</div>
+    </div>
+
+    <h2>Configure Question Paper - {{ subject.name }}</h2>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="paper_name">Paper Name</label>
+            <input type="text" id="paper_name" name="paper_name" value="Question Paper - {{ subject.name }}" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+                <label for="term">Exam Term</label>
+                <select id="term" name="term">
+                    <option value="Internal Assessment">Internal Assessment</option>
+                    <option value="Mid Term">Mid Term</option>
+                    <option value="Final Examination">Final Examination</option>
+                    <option value="Supplementary">Supplementary</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exam_date">Exam Date</label>
+                <input type="date" id="exam_date" name="exam_date" required>
+            </div>
+            <div class="form-group">
+                <label for="time_limit">Time Limit</label>
+                <input type="text" id="time_limit" name="time_limit" value="3 Hours">
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 1rem; color: #2c3e50;">Number of Questions by Marks</h3>
+        <div class="question-config">
+            {% for mark in available_marks %}
+            <div class="config-item">
+                <label for="mark_{{ mark }}">{{ mark }} Mark Questions</label>
+                <input type="number" id="mark_{{ mark }}" name="mark_{{ mark }}" value="0" min="0" max="50">
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="navigation" style="margin-top: 2rem;">
+            <a href="{{ url_for('paper_gen.select_subject', semester_id=subject.semester_id) }}" class="btn btn-secondary">&larr; Back</a>
+            <button type="submit" class="btn btn-primary">Preview Paper &rarr;</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.getElementById('exam_date').valueAsDate = new Date();
+</script>
+{% endblock %}

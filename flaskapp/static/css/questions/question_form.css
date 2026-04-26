@@ -1,0 +1,220 @@
+.form_field_question_label,
+#marks_label,
+#difficulty_label,
+#cognitive_label {
+  background-color: rgba(0, 123, 255, 0.15);
+  color: #585858;
+  font-size: 25px;
+  padding: 10px;
+}
+
+#marks_label,
+#difficulty_label,
+#cognitive_label {
+  width: 50%;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+#form_field_question_value,
+#marks_value,
+#difficulty_value,
+#cognitive_value {
+  box-sizing: border-box;
+  display: block;
+  flex-grow: 1;
+  font-size: 20px;
+  margin-top: 10px;
+  padding: 5px;
+  width: 100%;
+}
+
+#submit_btn,
+#reset_btn {
+  background-color: rgba(0, 123, 255, 0.15);
+  border: none;
+  /*color: rgba(88, 88, 88, 1);*/
+  color : #585858;
+  font-size: 20px;
+  padding: 10px 20px;
+}
+
+#form {
+  background-color: rgba(0, 123, 255, 0.15);
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.form_attributes {
+  display: flex;
+  background-color: rgba(0, 123, 255, 0.15);
+  justify-content: center;
+}
+
+#form_content {
+  background-color: white;
+  padding: 20px 10px;
+}
+
+.form__client_error {
+  color: red;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.form__error {
+  list-style-type: none;
+  padding: 0 0 0 10px;
+  width: 100%;
+  color: red;
+  font-size: 20px;
+  margin: 0;
+}
+
+.form__fields {
+  align-items: baseline;
+  display: flex;
+  margin-top: 10px;
+}
+
+.form_field_question_label {
+  flex-grow: 1;
+}
+
+.header {
+  /*color: rgba(88, 88, 88, 1);*/
+  color : #585858;
+  font-size: 40px;
+  margin: 0 20px;
+  font-weight: 500;
+}
+
+#imp_checkbox {
+  display: none;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+#mark_as_imp {
+  display: none;
+}
+
+label {
+  margin: 0 !important;
+}
+
+#new_question {
+  margin: 0 10px;
+  overflow-y: auto;
+}
+
+#page_container {
+  padding-top: 100px;
+}
+
+#reset_btn:hover {
+  cursor: pointer;
+}
+
+#submit_btn:hover {
+  cursor: pointer;
+}
+
+#submit_reset_container {
+  text-align: right;
+}
+#toggle_container {
+  align-items: center;
+  border-radius: 30px;
+  background-color: #ccc;
+  display: flex;
+  flex-shrink: 0;
+  height: 24px;
+  margin-right: 10px;
+  width: 48px;
+}
+
+#toggle_container:hover {
+  cursor: pointer;
+}
+
+#toggle_btn {
+  background-color: white;
+  border-radius: 50%;
+  left: 4px;
+  height: 16px;
+  position: relative;
+  transition: left 0.4s;
+  width: 16px;
+}
+
+@media (max-width: 1200px) {
+  #new_question {
+    margin: 0;
+  }
+}
+@media (max-width: 700px) {
+  .header {
+    font-size: 30px;
+  }
+}
+@media (max-width: 575px) {
+  .form_field_question_label,
+  #marks_label,
+  #difficulty_label,
+  #cognitive_label {
+    font-size: 20px;
+  }
+
+  #form_field_question_value,
+  #marks_value,
+  #difficulty_value,
+  #cognitive_value,
+  .form__client_error {
+    font-size: 16px;
+  }
+
+  #submit_btn,
+  #reset_btn {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+
+  .header {
+    font-size: 24px;
+    margin: 0;
+  }
+
+  input[type="checkbox"] {
+    height: 16px;
+    width: 16px;
+  }
+}
+@media (max-width: 445px) {
+  #marks_label,
+  #difficulty_label,
+  #cognitive_label {
+    width: 100%;
+  }
+
+  .form_attributes {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 400px) {
+  #submit_btn,
+  #reset_btn {
+    padding: 5px 10px;
+  }
+  .header {
+    font-size: 20px;
+  }
+}
+@media (max-width: 337px) {
+  .header {
+    font-size: 18px;
+  }
+}

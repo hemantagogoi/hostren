@@ -1,0 +1,325 @@
+/* Courses Page Modern CSS Enhancements */
+
+#course_container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem 0;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Enhanced Course Items Container */
+.course_items {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  align-content: start;
+}
+
+/* Enhanced Course Item Container */
+.course_item_container {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.course_item_container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.course_item_container:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.course_item {
+  display: block;
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.course_item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.course_item:hover::before {
+  left: 100%;
+}
+
+.course_item:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  color: #667eea;
+  transform: scale(1.05);
+}
+
+/* Enhanced Add Course Button */
+#add_course_small, .add_course {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 600;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, rgba(39, 174, 96, 0.1) 100%);
+  border: 2px dashed rgba(46, 204, 113, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+}
+
+#add_course_small::before, .add_course::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(46, 204, 113, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+#add_course_small:hover::before, .add_course:hover::before {
+  left: 100%;
+}
+
+#add_course_small:hover, .add_course:hover {
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.2) 0%, rgba(39, 174, 96, 0.2) 100%);
+  border-color: #2ecc71;
+  color: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+}
+
+/* Enhanced Delete Course Button */
+#delete_course_small, .delete_course {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.1) 100%);
+  border: 2px dashed rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+  font-weight: 600;
+  padding: 1.5rem;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 80px;
+}
+
+#delete_course_small::before, .delete_course::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+#delete_course_small:hover::before, .delete_course:hover::before {
+  left: 100%;
+}
+
+#delete_course_small:hover, .delete_course:hover {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(192, 57, 43, 0.2) 100%);
+  border-color: #e74c3c;
+  color: #c0392b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+}
+
+/* Enhanced Add Course Container */
+#add_course_container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  min-width: 300px;
+  transition: all 0.3s ease;
+  animation: fadeInLeft 0.8s ease-out 0.2s both;
+}
+
+#add_course_container:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+#add_course_container > a,
+#add_course_container > button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+#add_course_container > a:last-child,
+#add_course_container > button:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced Delete Course Box */
+.delete_course_box {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.delete_course_box:checked + .course_item {
+  opacity: 0.5;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1) 0%, rgba(192, 57, 43, 0.1) 100%);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+/* Enhanced Hide Class */
+.hide {
+  display: none;
+}
+
+.course_item_container:hover .hide {
+  display: block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.9) 0%, rgba(192, 57, 43, 0.9) 100%);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 10;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #course_container {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+
+  .course_items {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .course_item_container {
+    padding: 1rem;
+  }
+
+  #add_course_container {
+    min-width: auto;
+    padding: 1.5rem;
+  }
+
+  #add_course_small, .add_course,
+  #delete_course_small, .delete_course {
+    padding: 1rem;
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .course_item {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  .course_item_container {
+    padding: 0.75rem;
+  }
+
+  #add_course_container {
+    padding: 1rem;
+  }
+
+  #add_course_small, .add_course,
+  #delete_course_small, .delete_course {
+    padding: 0.75rem;
+    min-height: 50px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

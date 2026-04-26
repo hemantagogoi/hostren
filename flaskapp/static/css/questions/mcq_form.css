@@ -1,0 +1,54 @@
+.options_value,
+.fake_container {
+  background-color: white;
+  display: block;
+  flex-grow: 1;
+  font-size: 20px;
+  height: 0;
+  min-height: 53.6px;
+  margin-right: 10px;
+  overflow-y: hidden;
+  padding: 10px;
+  width: 100%;
+}
+
+.options_value:nth-child(odd),
+.fake_container:nth-child(odd) {
+  margin-right: 10px;
+}
+
+.fake_label {
+  display: block;
+  width: 100%;
+}
+
+.fake_label span {
+  display: none;
+}
+
+#options {
+  background-color: rgba(0, 123, 255, 0.15);
+  /*color: rgba(88, 88, 88, 1);*/
+  color : #585858;
+  font-size: 25px;
+  padding: 10px 10px 5px;
+}
+
+.options_row {
+  align-items: center;
+  /*color: rgba(88, 88, 88, 1);*/
+  color : #585858;
+  display: flex;
+}
+
+.options_row:first-child {
+  margin-top: 10px;
+}
+
+.options_row:last-child {
+  margin-bottom: 5px;
+}
+
+.options_label {
+  display: none;
+}

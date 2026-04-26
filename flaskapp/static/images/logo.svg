@@ -1,0 +1,27 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4f46e5; stop-opacity:1"></stop>
+      <stop offset="100%" style="stop-color:#06b6d4; stop-opacity:1"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Circle -->
+  <circle cx="110" cy="110" r="100" fill="url(#grad1)"></circle>
+
+  <!-- Inner White Circle -->
+  <circle cx="110" cy="110" r="80" fill="white"></circle>
+
+  <!-- Paper -->
+  <rect x="85" y="65" width="50" height="70" rx="8" fill="#4f46e5"></rect>
+  <line x1="95" y1="85" x2="125" y2="85" stroke="white" stroke-width="3"></line>
+  <line x1="95" y1="100" x2="125" y2="100" stroke="white" stroke-width="3"></line>
+  <line x1="95" y1="115" x2="115" y2="115" stroke="white" stroke-width="3"></line>
+
+  <!-- Question Mark -->
+  <text x="110" y="135" text-anchor="middle" font-size="45" font-family="Verdana, sans-serif" fill="#06b6d4" font-weight="bold">?</text>
+
+</svg>

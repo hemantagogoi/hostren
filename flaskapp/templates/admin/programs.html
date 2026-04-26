@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Programs{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Add New Program</h2>
+    <form method="POST" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div class="form-group" style="flex: 2;">
+            <label for="name">Program Name (e.g., BA, BSc, BCom)</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Bachelor of Arts" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label for="duration">Duration (Years)</label>
+            <input type="number" id="duration" name="duration" value="3" min="1" max="5">
+        </div>
+        <button type="submit" class="btn btn-success">Add Program</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Existing Programs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Duration (Years)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for program in programs %}
+            <tr>
+                <td>{{ program.id }}</td>
+                <td>{{ program.name }}</td>
+                <td>{{ program.duration_years }}</td>
+                <td>
+                    <a href="{{ url_for('admin.delete_program', program_id=program.id) }}" 
+                       class="btn btn-danger" 
+                       onclick="return confirm('Delete this program?');">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #666;">No programs found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

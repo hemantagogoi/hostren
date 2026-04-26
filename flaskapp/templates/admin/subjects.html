@@ -1,0 +1,66 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Subjects{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Add New Subject</h2>
+    <form method="POST" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div class="form-group" style="flex: 2;">
+            <label for="name">Subject Name</label>
+            <input type="text" id="name" name="name" placeholder="e.g., Data Structures" required>
+        </div>
+        <div class="form-group" style="flex: 1;">
+            <label for="code">Subject Code</label>
+            <input type="text" id="code" name="code" placeholder="e.g., CS101">
+        </div>
+        <div class="form-group" style="flex: 2;">
+            <label for="semester_id">Semester</label>
+            <select id="semester_id" name="semester_id" required>
+                <option value="">Select Semester</option>
+                {% for sem in semesters %}
+                <option value="{{ sem.id }}">Sem {{ sem.number }} - {{ sem.department.name }} ({{ sem.department.program.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Add Subject</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Existing Subjects</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Semester</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subject in subjects %}
+            <tr>
+                <td>{{ subject.id }}</td>
+                <td>{{ subject.code or 'N/A' }}</td>
+                <td>{{ subject.name }}</td>
+                <td>Semester {{ subject.semester.number if subject.semester else 'N/A' }}</td>
+                <td>{{ subject.semester.department.name if subject.semester and subject.semester.department else 'N/A' }}</td>
+                <td>
+                    <a href="{{ url_for('admin.manage_units', subject_id=subject.id) }}" class="btn btn-primary">Units</a>
+                    <a href="{{ url_for('admin.delete_subject', subject_id=subject.id) }}" 
+                       class="btn btn-danger" 
+                       onclick="return confirm('Delete this subject?');">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: #666;">No subjects found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

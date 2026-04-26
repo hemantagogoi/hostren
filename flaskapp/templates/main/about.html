@@ -1,0 +1,54 @@
+{% extends "main/general.html" %} {% block main %}
+<div class="row m-5 mb-2" id="page_title">
+    <div class="col">
+        <h2>About Us</h2>
+    </div>
+</div>
+
+<div class="container pt-1" id="wrapper">
+    <div class="row p-2">
+        <img src="{{ url_for('static',
+            filename='images/about_us.svg') }}" class="about_logo" alt="Image" />
+    </div>
+
+    <div class="row p-2" id="about_content">
+        <p>
+            Welcome to question paper generator, We're dedicated to giving you the very best of our
+            service. We are hoping that, this website will help in lighten your work
+            for making question paper. Our goal to make this website is to reduce
+            hours of manual work to set question paper which cover all syllbas,
+            include important qustions and with overall difficulty as you desire. This
+            website is created by hemanta gogoi and bhabesh gogoi. 
+        </p>
+        <p>
+            We hope you enjoy our products as much as we enjoy offering them to you.
+        </p>
+    </div>
+
+    <h3 class="py-3" id="team_title">Our Team</h3>
+
+    <div class="row p-2" id="team">
+        <div class="m-2 team_card">
+            <div class="row m_name">
+                <p class="m-2">HemantaGogoi</p>
+            </div>
+            <div class="row p-2 m_speciality">
+                <div class="col-1 px-1"><i class="fas fa-code"></i></div>
+                <div class="col">Back-end developer, Project manager(Quality assurance engineer)</div>
+            </div>
+        </div>
+
+        <div class="m-2 team_card">
+            <div class="row m_name">
+                <p class="m-2">Bhabesh Gogoi</p>
+            </div>
+            <div class="row p-2 m_speciality">
+                <div class="col-1 px-1"><i class="fas fa-desktop"></i></div>
+                <div class="col">Front-end developer(UI/UX designer)</div>
+            </div>
+        </div>
+
+       
+    </div>
+</div>
+{% endblock main %}

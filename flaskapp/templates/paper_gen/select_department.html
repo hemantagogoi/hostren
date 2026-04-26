@@ -1,0 +1,34 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}Select Department{% endblock %}
+{% block header_title %}Select Department{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="progress-bar">
+        <div class="step completed">1</div>
+        <div class="step active">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+        <div class="step">5</div>
+    </div>
+
+    <h2>Choose a Department - {{ program.name }}</h2>
+    <div class="selection-grid">
+        {% for dept in departments %}
+        <a href="{{ url_for('paper_gen.select_semester', dept_id=dept.id) }}" class="selection-card">
+            <h3>{{ dept.name }}</h3>
+            <p>{{ program.name }}</p>
+        </a>
+        {% else %}
+        <div style="text-align: center; color: #666; grid-column: 1 / -1;">
+            <p>No departments available for this program.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="navigation">
+        <a href="{{ url_for('paper_gen.select_program') }}" class="btn btn-secondary">&larr; Back</a>
+    </div>
+</div>
+{% endblock %}

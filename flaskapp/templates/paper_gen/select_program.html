@@ -1,0 +1,30 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}Select Program{% endblock %}
+{% block header_title %}Select Program{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="progress-bar">
+        <div class="step active">1</div>
+        <div class="step">2</div>
+        <div class="step">3</div>
+        <div class="step">4</div>
+        <div class="step">5</div>
+    </div>
+
+    <h2>Choose a Program</h2>
+    <div class="selection-grid">
+        {% for program in programs %}
+        <a href="{{ url_for('paper_gen.select_department', program_id=program.id) }}" class="selection-card">
+            <h3>{{ program.name }}</h3>
+            <p>{{ program.duration_years }} Years Program</p>
+        </a>
+        {% else %}
+        <div style="text-align: center; color: #666; grid-column: 1 / -1;">
+            <p>No programs available. Please contact admin.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

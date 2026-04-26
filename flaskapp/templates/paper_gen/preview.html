@@ -1,0 +1,46 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}Preview Paper{% endblock %}
+{% block header_title %}Preview Question Paper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Paper Preview - {{ config.name }}</h2>
+    
+    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <p><strong>Subject:</strong> {{ subject.name }}</p>
+        <p><strong>Term:</strong> {{ config.term }}</p>
+        <p><strong>Total Marks:</strong> {{ config.total_marks }}</p>
+        <p><strong>Time Limit:</strong> {{ config.time_limit }}</p>
+        <p><strong>Exam Date:</strong> {{ config.exam_date }}</p>
+    </div>
+
+    <div class="paper-preview">
+        <div class="paper-header">
+            <h2>{{ config.name }}</h2>
+            <p><strong>{{ config.term }}</strong></p>
+            <p>Subject: {{ subject.name }} | Time: {{ config.time_limit }} | Marks: {{ config.total_marks }}</p>
+            <p>Date: {{ config.exam_date }}</p>
+        </div>
+
+        {% for mark, questions in questions_by_mark.items() %}
+        <div class="question-section">
+            <h4>{{ mark }} Mark Questions ({{ questions|length }} x {{ mark }} = {{ questions|length * mark }} marks)</h4>
+            {% for q in questions %}
+            <div class="question-item">
+                <strong>Q{{ loop.index }}.</strong> {{ q.question.question }}
+                <span style="float: right; color: #666;">[{{ q.difficulty.name }}]</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" style="margin-top: 2rem;">
+        <div class="navigation">
+            <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">&larr; Back to Configure</a>
+            <button type="submit" class="btn btn-success">Generate & Save Paper</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

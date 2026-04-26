@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block special_top_links %}
+    <a class="top_navigation_items" href={{ url_for("courses.all_courses") }}>
+        <h4 class="py-2 mx-3">Courses</h4>
+    </a>
+{% endblock special_top_links %}
+
+{% block special_side_links %}
+    <a class="side_navigation_items" href={{ url_for("papers.paper_generate_request", course_id=course_id) }}>Generate
+        Paper</a>
+    <a class="side_navigation_items" href={{url_for('papers.all_papers',course_id=course_id) }}>Previous Papers</a>
+    <a class="side_navigation_items" href={{ url_for("courses.all_courses") }}>Courses</a>
+{% endblock special_side_links %}
+
+{% block flashes %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+messages %}
+        <ul class="flashes flashes_question">
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %} {% endwith %}
+{% endblock flashes %}
+
+{% block main %}
+
+    <div id="unit_container">
+        <div id="course_id">{{course_id}}</div>
+        <div class="unit_items">
+            <a id="add_unit_small" href='{{ url_for("courses.add_unit", course_id=course_id) }}'>
+                <div>
+                    Add Unit
+                </div>
+            </a>
+            <button id="delete_unit_small">
+                <div>Remove Unit</div>
+            </button>
+            {% for _unit in units %}
+             <div class="unit_item_container">
+                 <label><span class="hide">Delete Unit</span> <input type="checkbox" class="delete_unit_box hide"/></label>
+                 <a class="unit_item" href=
+                         '{{ url_for("questions.all_questions", qtype="sub", course_id=course_id, unit_id=_unit.id)}}' data-id="{{_unit.id}}"><span>{{ _unit.chapter_no }}</span>. {{ _unit.name }}</a>
+             </div>
+
+            {% endfor %}
+        </div>
+        <div id="add_unit_container">
+            <a id="add_unit" href={{ url_for("courses.add_unit", course_id=course_id) }}>
+            <div><!--<img src="{{ url_for('static',filename='images/add.svg') }}" id="add_img" alt="add">-->
+                Add Unit
+                </div>
+            </a>
+            <a id="generate_paper" href={{ url_for("papers.paper_generate_request", course_id=course_id) }}>
+                <div>Generate Paper</div>
+            </a>
+            <a id="previous_paper" href="{{url_for('papers.all_papers',course_id=course_id) }}">
+                <div>Previous Paper</div>
+            </a>
+            <button id="delete_unit">
+                <div>Remove Unit</div>
+            </button>
+        </div>
+    </div>
+
+{% endblock main %}

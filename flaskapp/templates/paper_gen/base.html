@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Question Paper Generator{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/paper_gen/user_panel.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/animations.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="navbar">
+        <button class="navbar-toggle" onclick="toggleMenu()">☰</button>
+        <a href="{{ url_for('main.index') }}" class="navbar-brand">Question Paper Generator</a>
+        <div class="navbar-menu" id="navbarMenu">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('paper_gen.select_program') }}">Generate Paper</a>
+                <a href="{{ url_for('paper_gen.my_papers') }}">My Papers</a>
+                <a href="{{ url_for('users.logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('users.login') }}">Login</a>
+                <a href="{{ url_for('users.register') }}">Register</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>{% block header_title %}Generate Question Paper{% endblock %}</h1>
+            <p>Follow the steps to generate your custom question paper</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_js %}
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('show');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navbar = document.querySelector('.navbar');
+            const menu = document.getElementById('navbarMenu');
+            const toggle = document.querySelector('.navbar-toggle');
+            
+            if (!navbar.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        // Close menu when window is resized to desktop size
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('navbarMenu').classList.remove('show');
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
