@@ -11,14 +11,8 @@ cmds = [
     "pip install -r requirements.txt"
 ]
 
-[phases.build]
-cmds = [
-    ". /opt/venv/bin/activate",
-    "pip install -r requirements.txt"
-]
-
 [start]
-cmd = ". /opt/venv/bin/activate && chmod +x start.sh && ./start.sh"
+cmd = ". /opt/venv/bin/activate && python app.py"
 
 [variables]
 PYTHON_VERSION = "3.11"
