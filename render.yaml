@@ -1,14 +1,15 @@
 services:
   - type: web
     name: question-paper-generator
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    runtime: python-3.11
+    plan: free
+    buildCommand: pip install --upgrade pip setuptools && pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
       - key: SECRET_KEY
         value: 166839997171300f4a1f899733c043e20d1758d3595ff0c8
       - key: RENDER
         value: "true"
+      - key: FLASK_ENV
+        value: production
     healthCheckPath: /health
