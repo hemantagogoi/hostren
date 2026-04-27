@@ -19,7 +19,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     SECRET_KEY = "166839997171300f4a1f899733c043e20d1758d3595ff0c8"
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///app.db")
     DEBUG = True
     ENV = "development"
 
@@ -33,14 +33,12 @@ class RailwayConfig(Config):
         super().__init__()
         # Railway provides DATABASE_URL environment variable
         database_url = os.environ.get("DATABASE_URL")
-        if not database_url:
-            raise ValueError("DATABASE_URL environment variable is required for Railway deployment")
-        
-        # Convert postgres:// to postgresql:// for SQLAlchemy
-        if database_url.startswith("postgres://"):
-            database_url = database_url.replace("postgres://", "postgresql://", 1)
-        
-        self.SQLALCHEMY_DATABASE_URI = database_url
+        if database_url:
+            # Convert postgres:// to postgresql:// for SQLAlchemy
+            if database_url.startswith("postgres://"):
+                database_url = database_url.replace("postgres://", "postgresql://", 1)
+            self.SQLALCHEMY_DATABASE_URI = database_url
+        # If no DATABASE_URL, keep the default from parent class (None)
 
 
 class TestingConfig(Config):
@@ -57,8 +55,30 @@ class ProductionConfig(Config):
     
     def __init__(self):
         super().__init__()
-        # Require PostgreSQL for production - no SQLite fallback
+        # Use DATABASE_URL from environment
         database_url = os.environ.get("DATABASE_URL")
-        if not database_url:
-            raise ValueError("DATABASE_URL environment variable is required for production")
-        self.SQLALCHEMY_DATABASE_URI = database_url
+        if database_url:
+            self.SQLALCHEMY_DATABASE_URI = database_url
+        # If no DATABASE_URL, keep the default from parent class (None)
+
+
+class SupabaseConfig(Config):
+    SECRET_KEY = os.environ.get("SECRET_KEY", "supabase-secret-key")
+    DEBUG = False
+    ENV = "production"
+    
+    def __init__(self):
+        super().__init__()
+        # Supabase provides DATABASE_URL environment variable
+        database_url = os.environ.get("DATABASE_URL")
+        if database_url:
+            # Convert postgres:// to postgresql:// for SQLAlchemy
+            if database_url.startswith("postgres://"):
+                database_url = database_url.replace("postgres://", "postgresql://", 1)
+            self.SQLALCHEMY_DATABASE_URI = database_url
+        # If no DATABASE_URL, keep the default from parent class (None)
+        
+        # Supabase specific settings
+        self.SUPABASE_URL = os.environ.get("SUPABASE_URL")
+        self.SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY")
+        self.SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")

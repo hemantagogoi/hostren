@@ -10,26 +10,32 @@ except ImportError:
 
 from flaskapp import create_app
 
-from flaskapp.config import DevelopmentConfig, ProductionConfig, RailwayConfig
+from flaskapp.config import DevelopmentConfig, ProductionConfig, RailwayConfig, SupabaseConfig
 
 import os
 
 # Use appropriate config based on platform
-if os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_SERVICE_NAME"):
+if os.environ.get("SUPABASE_URL") or os.environ.get("SUPABASE_ANON_KEY"):
+    app = create_app(config_class=SupabaseConfig)
+elif os.environ.get("RAILWAY_ENVIRONMENT") or os.environ.get("RAILWAY_SERVICE_NAME"):
     app = create_app(config_class=RailwayConfig)
 elif os.environ.get("RENDER"):
     app = create_app(config_class=ProductionConfig)
 else:
     app = create_app(config_class=DevelopmentConfig)
 
-# Initialize database tables
-with app.app_context():
-    from flaskapp import db
-    try:
-        db.create_all()
-        print("Database tables created successfully")
-    except Exception as e:
-        print(f"Error creating database tables: {e}")
+# Initialize database tables (only if database is configured)
+try:
+    with app.app_context():
+        from flaskapp import db
+        try:
+            db.create_all()
+            print("Database tables created successfully")
+        except Exception as e:
+            print(f"Error creating database tables: {e}")
+except Exception as e:
+    print(f"Database not configured: {e}")
+    print("App will start without database initialization")
 
 
 @app.route('/health')

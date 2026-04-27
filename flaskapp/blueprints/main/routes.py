@@ -12,6 +12,11 @@ from flaskapp.utils import profile_path
 
 main = Blueprint("main", __name__)
 
+@main.route("/database-diagram")
+def database_diagram():
+    """Render database relational diagram page"""
+    return render_template("database_diagram.html")
+
 
 @main.route("/")
 def index():

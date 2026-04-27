@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Relational Diagram - Question Paper Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/vis-network.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/dist/vis-network.min.css" rel="stylesheet">
+    <style>
+        .table-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        .relationship-line {
+            stroke: #4a5568;
+            stroke-width: 2px;
+            fill: none;
+        }
+        .primary-key {
+            color: #dc2626;
+            font-weight: bold;
+            background: #fee2e2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .foreign-key {
+            color: #059669;
+            font-weight: bold;
+            background: #eff6ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        #diagram {
+            width: 100%;
+            height: 800px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: #f8f9fa;
+        }
+        .zoom-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 200px;
+        }
+        @media (max-width: 768px) {
+            .zoom-controls {
+                top: 10px;
+                right: 10px;
+            }
+            .legend {
+                bottom: 10px;
+                left: 10px;
+                max-width: 150px;
+            }
+            #diagram {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <!-- Header -->
+        <header class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center">
+                        <h1 class="text-3xl font-bold text-gray-900">🗄️ Database Relational Diagram</h1>
+                        <p class="text-gray-600 ml-3">Question Paper Generator - Complete Schema Visualization</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button onclick="resetZoom()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            🔍 Reset View
+                        </button>
+                        <button onclick="exportDiagram()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            📷 Export Image
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                
+                <!-- Tables Section -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        📊 Database Tables
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Admin Table -->
+                        <div class="table-card p-4 text-white">
+                            <h3 class="text-lg font-bold mb-3">👤 ADMIN</h3>
+                            <div class="text-sm space-y-1">
+                                <div><span class="primary-key">id (PK)</span> - Primary Key</div>
+                                <div>📝 username - Unique</div>
+                                <div>📧 email - Unique</div>
+                                <div>🔒 password - Hashed</div>
+                                <div>👑 is_admin - Boolean</div>
+                            </div>
+                        </div>
+
+                        <!-- User Table -->
+                        <div class="table-card p-4 text-white">
+                            <h3 class="text-lg font-bold mb-3">👥 USER</h3>
+                            <div class="text-sm space-y-1">
+                                <div><span class="primary-key">id (PK)</span> - Primary Key</div>
+                                <div>📝 username - Unique</div>
+                                <div>📧 email - Unique</div>
+                                <div>🖼️ image_file - Profile</div>
+                                <div>🔒 password - Hashed</div>
+                                <div>✅ is_approved - Approval Status</div>
+                                <div>📅 approval_requested_at - Timestamp</div>
+                                <div>📅 approved_at - Timestamp</div>
+                                <div><span class="foreign-key">approved_by (FK)</span> → ADMIN.id</div>
+                                <div><span class="foreign-key">department_id (FK)</span> → DEPARTMENT.id</div>
+                            </div>
+                        </div>
+
+                        <!-- Program Table -->
+                        <div class="table-card p-4 text-white">
+                            <h3 class="text-lg font-bold mb-3">🎓 PROGRAM</h3>
+                            <div class="text-sm space-y-1">
+                                <div><span class="primary-key">id (PK)</span> - Primary Key</div>
+                                <div>📝 name - Program Name</div>
+                                <div>⏰ duration_years - Duration</div>
+                            </div>
+                        </div>
+
+                        <!-- Department Table -->
+                        <div class="table-card p-4 text-white">
+                            <h3 class="text-lg font-bold mb-3">🏢 DEPARTMENT</h3>
+                            <div class="text-sm space-y-1">
+                                <div><span class="primary-key">id (PK)</span> - Primary Key</div>
+                                <div>📝 name - Department Name</div>
+                                <div><span class="foreign-key">program_id (FK)</span> → PROGRAM.id</div>
+                            </div>
+                        </div>
+
+                        <!-- Semester Table -->
+                        <div class="table-card p-4 text-white">
+                            <h3 class="text-lg font-bold mb-3">📅 SEMESTER</h3>
+                            <div class="text-sm space-y-1">
+                                <div><span class="primary-key">id (PK)</span> - Primary Key</div>
+                                <div>🔢 number - Semester Number</div>
+                                <div><span class="foreign-key">department_id (FK)</span> → DEPARTMENT.id</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Relationships Section -->
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        🔗 Key Relationships
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <!-- Admin-User Relationship -->
+                        <div class="border-l-4 border-blue-500 pl-4">
+                            <h4 class="font-semibold text-blue-600 mb-2">👤 ADMIN → 👥 USER (Approval Workflow)</h4>
+                            <p class="text-gray-700 text-sm">One admin can approve multiple users. Creates approval audit trail.</p>
+                            <div class="bg-blue-50 p-3 rounded-lg mt-2">
+                                <code class="text-xs">admin.approved_users ← User.approving_admin</code>
+                            </div>
+                        </div>
+
+                        <!-- Academic Hierarchy -->
+                        <div class="border-l-4 border-green-500 pl-4">
+                            <h4 class="font-semibold text-green-600 mb-2">🎓 ACADEMIC HIERARCHY</h4>
+                            <p class="text-gray-700 text-sm">Program contains departments, which contain semesters, which contain subjects.</p>
+                            <div class="bg-green-50 p-3 rounded-lg mt-2">
+                                <code class="text-xs">PROGRAM → DEPARTMENT → SEMESTER → SUBJECT</code>
+                            </div>
+                        </div>
+
+                        <!-- Content Hierarchy -->
+                        <div class="border-l-4 border-purple-500 pl-4">
+                            <h4 class="font-semibold text-purple-600 mb-2">📚 CONTENT HIERARCHY</h4>
+                            <p class="text-gray-700 text-sm">Subjects contain units, which contain questions. Papers are generated from subjects.</p>
+                            <div class="bg-purple-50 p-3 rounded-lg mt-2">
+                                <code class="text-xs">SUBJECT → UNIT → QUESTION</code><br>
+                                <code class="text-xs">SUBJECT → PAPER</code>
+                            </div>
+                        </div>
+
+                        <!-- User Assignment -->
+                        <div class="border-l-4 border-orange-500 pl-4">
+                            <h4 class="font-semibold text-orange-600 mb-2">👥 USER ASSIGNMENT</h4>
+                            <p class="text-gray-700 text-sm">Users are assigned to departments for organization.</p>
+                            <div class="bg-orange-50 p-3 rounded-lg mt-2">
+                                <code class="text-xs">DEPARTMENT → USER.department_id</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Diagram -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                    🎯 Interactive Database Diagram
+                </h2>
+                
+                <div class="mb-4 flex items-center space-x-4">
+                    <button onclick="zoomIn()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition-colors">
+                        🔍+ Zoom In
+                    </button>
+                    <button onclick="zoomOut()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded transition-colors">
+                        🔍- Zoom Out
+                    </button>
+                    <button onclick="resetView()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition-colors">
+                        🔄 Reset View
+                    </button>
+                </div>
+
+                <div id="diagram" class="overflow-auto"></div>
+            </div>
+        </main>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3 class="font-bold text-gray-900 mb-3">Legend</h3>
+            <div class="space-y-2 text-sm">
+                <div><span class="primary-key">PK</span> - Primary Key</div>
+                <div><span class="foreign-key">FK</span> - Foreign Key</div>
+                <div>🔗 - Relationships</div>
+                <div>📊 - Tables</div>
+            </div>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+            <div class="text-sm space-y-2">
+                <div>Zoom: <span id="zoomLevel">100%</span></div>
+                <div class="space-x-2">
+                    <button onclick="zoomIn()" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">+</button>
+                    <button onclick="zoomOut()" class="bg-gray-500 text-white px-2 py-1 rounded text-xs">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database structure data
+        const databaseStructure = {
+            nodes: [
+                // Admin Table
+                {id: 'admin', label: '👤 ADMIN', group: 'authentication', shape: 'box', color: '#dc2626'},
+                // User Table
+                {id: 'user', label: '👥 USER', group: 'authentication', shape: 'box', color: '#059669'},
+                // Academic Structure
+                {id: 'program', label: '🎓 PROGRAM', group: 'academic', shape: 'box', color: '#10b981'},
+                {id: 'department', label: '🏢 DEPARTMENT', group: 'academic', shape: 'box', color: '#f59e0b'},
+                {id: 'semester', label: '📅 SEMESTER', group: 'academic', shape: 'box', color: '#ef4444'},
+                {id: 'subject', label: '📚 SUBJECT', group: 'content', shape: 'box', color: '#8b5cf6'},
+                {id: 'unit', label: '📖 UNIT', group: 'content', shape: 'box', color: '#3b82f6'},
+                // Content
+                {id: 'paper', label: '📄 PAPER', group: 'content', shape: 'box', color: '#6366f1'},
+                {id: 'question', label: '❓ QUESTION', group: 'content', shape: 'box', color: '#ec4899'}
+            ],
+            edges: [
+                // Admin-User Relationship
+                {from: 'admin', to: 'user', arrows: 'to', label: 'approves', color: '#4a5568'},
+                // Academic Hierarchy
+                {from: 'program', to: 'department', arrows: 'to', label: 'contains', color: '#10b981'},
+                {from: 'department', to: 'semester', arrows: 'to', label: 'contains', color: '#f59e0b'},
+                {from: 'department', to: 'user', arrows: 'to', label: 'assigns', color: '#ef4444'},
+                {from: 'semester', to: 'subject', arrows: 'to', label: 'contains', color: '#ef4444'},
+                // Content Hierarchy
+                {from: 'subject', to: 'unit', arrows: 'to', label: 'contains', color: '#8b5cf6'},
+                {from: 'unit', to: 'question', arrows: 'to', label: 'contains', color: '#3b82f6'},
+                {from: 'subject', to: 'paper', arrows: 'to', label: 'generates', color: '#6366f1'}
+            ]
+        };
+
+        let currentZoom = 1;
+
+        // Initialize diagram
+        const container = document.getElementById('diagram');
+        const network = new vis.Network(container, databaseStructure, {
+            nodes: {
+                shape: 'box',
+                margin: 10,
+                font: {
+                    size: 14,
+                    face: 'monospace'
+                },
+                borderWidth: 2
+            },
+            edges: {
+                arrows: {
+                    to: {
+                        enabled: true,
+                        scaleFactor: 1.2
+                    }
+                },
+                font: {
+                    size: 12,
+                    align: 'middle',
+                    background: 'white'
+                },
+                smooth: {
+                    type: 'curvedCW',
+                    roundness: 0.5
+                }
+            },
+            physics: {
+                enabled: false
+            },
+            interaction: {
+                hover: true,
+                zoomView: true
+            }
+        });
+
+        // Zoom functions
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom * 1.2, 3);
+            network.moveTo({scale: currentZoom});
+            updateZoomDisplay();
+        }
+
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom / 1.2, 0.3);
+            network.moveTo({scale: currentZoom});
+            updateZoomDisplay();
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            network.fit();
+            updateZoomDisplay();
+        }
+
+        function updateZoomDisplay() {
+            document.getElementById('zoomLevel').textContent = Math.round(currentZoom * 100) + '%';
+        }
+
+        function resetView() {
+            network.fit();
+            currentZoom = 1;
+            updateZoomDisplay();
+        }
+
+        function exportDiagram() {
+            const canvas = container.querySelector('canvas');
+            const link = document.createElement('a');
+            link.download = 'database-diagram.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '+':
+                    e.preventDefault();
+                    zoomIn();
+                        break;
+                    case '-':
+                        e.preventDefault();
+                    zoomOut();
+                        break;
+                    case '0':
+                        e.preventDefault();
+                        resetView();
+                        break;
+                }
+            }
+        });
+
+        // Initial fit
+        network.once('stabilizationIterationsDone', () => {
+            network.fit();
+        });
+    </script>
+</body>
+</html>
