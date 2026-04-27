@@ -10,7 +10,7 @@ Flask-Minify==0.50
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
 gunicorn>=21.2.0
-SQLAlchemy==2.0.23
+SQLAlchemy>=2.0.40
 Werkzeug==2.3.7
 Jinja2==3.1.2
 WTForms==3.0.1
