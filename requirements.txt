@@ -9,7 +9,7 @@ Flask-Migrate==4.0.5
 Flask-Minify==0.50
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
-gunicorn==20.1.0
+gunicorn>=21.2.0
 SQLAlchemy==2.0.23
 Werkzeug==2.3.7
 Jinja2==3.1.2
