@@ -1,0 +1,299 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block header_title %}Manage Questions - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Add New Question - {{ subject.name }}</h2>
+        <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">&larr; Back to Configure Paper</a>
+    </div>
+    <!-- Simple Question Addition Form (like the image) -->
+    <form method="POST" style="background: #f8f9fa; padding: 2rem; border-radius: 8px; margin-bottom: 2rem;">
+        <!-- Question Type Toggle -->
+        <div style="margin-bottom: 1.5rem;">
+            <label style="font-weight: bold; margin-bottom: 0.5rem; display: block;">QUESTION TYPE</label>
+            <div style="display: flex; gap: 1rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="radio" name="question_type" value="sub" 
+                           {% if question_type == 'sub' %}checked{% endif %} 
+                           onchange="toggleMCQOptions()" style="cursor: pointer;">
+                    <span>Subjective</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="radio" name="question_type" value="mcq" 
+                           {% if question_type == 'mcq' %}checked{% endif %} 
+                           onchange="toggleMCQOptions()" style="cursor: pointer;">
+                    <span>MCQ</span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Unit Selection -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="unit_id" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">SELECT UNIT</label>
+            <select id="unit_id" name="unit_id" class="form-control" required 
+                    style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;">
+                <option value="">-- Select Unit --</option>
+                {% for unit in units %}
+                <option value="{{ unit.id }}">
+                    Unit {{ unit.chapter_no }}: {{ unit.name or 'Unnamed Unit' }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Question Text Area -->
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="question" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">QUESTION</label>
+            {{ form.question(class="form-control", style="min-height: 120px; padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; resize: vertical;") }}
+            {% if form.question.errors %}
+                <div class="text-danger" style="margin-top: 0.5rem;">
+                    {% for error in form.question.errors %}
+                        <small>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Form Fields Row -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+                <label for="mark" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">MARKS</label>
+                {{ form.mark(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+                {% if form.mark.errors %}
+                    <div class="text-danger" style="margin-top: 0.5rem;">
+                        {% for error in form.mark.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="difficulty" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">DIFFICULTY</label>
+                {{ form.difficulty(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+            </div>
+            <div class="form-group">
+                <label for="cognitive_level" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">COGNITIVE LEVEL</label>
+                {{ form.cognitive_level(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+            </div>
+            <div class="form-group">
+                <label for="type" style="font-weight: bold; margin-bottom: 0.5rem; display: block;">TYPE</label>
+                <input type="text" id="type_display" value="{{ question_type.upper() }}" readonly 
+                       style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; background: #e9ecef;">
+            </div>
+        </div>
+
+        <!-- MCQ Options (if MCQ type) -->
+        <div id="mcq_options_section" style="margin-bottom: 1.5rem;">
+            <h5 style="font-weight: bold; margin-bottom: 1rem;">MCQ OPTIONS</h5>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div class="form-group">
+                    <label for="option1">Option 1</label>
+                    {{ form.option1(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+                    {% if form.option1.errors %}
+                        <div class="text-danger" style="margin-top: 0.5rem;">
+                            {% for error in form.option1.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option2">Option 2</label>
+                    {{ form.option2(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+                    {% if form.option2.errors %}
+                        <div class="text-danger" style="margin-top: 0.5rem;">
+                            {% for error in form.option2.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option3">Option 3</label>
+                    {{ form.option3(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+                    {% if form.option3.errors %}
+                        <div class="text-danger" style="margin-top: 0.5rem;">
+                            {% for error in form.option3.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option4">Option 4</label>
+                    {{ form.option4(class="form-control", style="padding: 0.75rem; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem;") }}
+                    {% if form.option4.errors %}
+                        <div class="text-danger" style="margin-top: 0.5rem;">
+                            {% for error in form.option4.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Important Checkbox -->
+        <div class="form-group" style="margin-bottom: 2rem;">
+            <div class="form-check" style="display: flex; align-items: center; gap: 0.5rem;">
+                {{ form.imp(class="form-check-input", style="width: 18px; height: 18px;") }}
+                <label for="imp" class="form-check-label" style="font-weight: bold;">MARK AS IMPORTANT</label>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-success" 
+                    style="padding: 0.75rem 2rem; font-size: 1.1rem; font-weight: bold; border-radius: 6px;">
+                ADD QUESTION
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Existing Questions - {{ subject.name }}</h2>
+    
+    {% if questions %}
+    <div class="questions-summary" style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <strong>Total Questions: {{ questions|length }}</strong> | 
+        Subjective: {{ questions|selectattr('question_type.name', 'equalto', 'sub')|list|length }} | 
+        MCQ: {{ questions|selectattr('question_type.name', 'equalto', 'mcq')|list|length }}
+    </div>
+
+    <div class="questions-table">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f5f5f5;">
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Unit</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Question</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Type</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Marks</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Difficulty</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ddd;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in questions %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 0.75rem;">
+                        <strong>Unit {{ question.unit.chapter_no }}</strong><br>
+                        <small>{{ question.unit.name or 'Unnamed' }}</small>
+                    </td>
+                    <td style="padding: 0.75rem;">
+                        <div style="max-width: 300px; word-wrap: break-word;">
+                            {{ question.question.question[:100] }}{% if question.question.question|length > 100 %}...{% endif %}
+                            {% if question.imp %}<span class="badge badge-warning" style="background: #ffc107; color: #000; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IMP</span>{% endif %}
+                        </div>
+                    </td>
+                    <td style="padding: 0.75rem;">
+                        {% if question.question_type.name == 'mcq' %}
+                            <span class="badge badge-info" style="background: #17a2b8; color: white; padding: 4px 8px; border-radius: 4px;">MCQ</span>
+                        {% else %}
+                            <span class="badge badge-primary" style="background: #007bff; color: white; padding: 4px 8px; border-radius: 4px;">Subjective</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 0.75rem; font-weight: bold;">{{ question.mark }}</td>
+                    <td style="padding: 0.75rem;">
+                        <span class="difficulty-{{ question.difficulty.name|lower }}" style="padding: 2px 8px; border-radius: 12px; font-size: 0.9em;">
+                            {{ question.difficulty.name }}
+                        </span>
+                    </td>
+                    <td style="padding: 0.75rem;">
+                        <a href="{{ url_for('paper_gen.delete_question_from_paper', question_id=question.id) }}" 
+                           class="btn btn-danger btn-sm" 
+                           onclick="return confirm('Are you sure you want to delete this question?');"
+                           style="padding: 4px 8px; font-size: 0.8em;">
+                            🗑️ Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 2rem; color: #666; background: #f8f9fa; border-radius: 8px;">
+        <h4>No questions found</h4>
+        <p>Add your first question using the form above to get started!</p>
+    </div>
+    {% endif %}
+</div>
+
+<div style="margin-top: 1rem; display: flex; gap: 1rem;">
+    <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">&larr; Back to Configure Paper</a>
+    {% if questions %}
+    <a href="{{ url_for('paper_gen.manage_questions_for_paper', subject_id=subject.id, question_type='sub') }}" class="btn btn-primary">Add Subjective Question</a>
+    <a href="{{ url_for('paper_gen.manage_questions_for_paper', subject_id=subject.id, question_type='mcq') }}" class="btn btn-info">Add MCQ Question</a>
+    {% endif %}
+</div>
+
+<style>
+.difficulty-easy {
+    background: #d4edda;
+    color: #155724;
+}
+
+.difficulty-medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.difficulty-hard {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.question-type-selection {
+    border: 2px dashed #007bff;
+}
+
+.questions-table table {
+    font-size: 0.9em;
+}
+
+.questions-table tr:hover {
+    background: #f8f9fa;
+}
+
+.badge {
+    display: inline-block;
+}
+
+.form-check {
+    padding: 0.5rem 0;
+}
+
+.form-check-input {
+    margin-right: 0.5rem;
+}
+</style>
+
+<script>
+function toggleMCQOptions() {
+    const questionType = document.querySelector('input[name="question_type"]:checked').value;
+    const typeDisplay = document.getElementById('type_display');
+    const mcqOptions = document.querySelector('#mcq_options_section');
+    
+    // Update type display
+    typeDisplay.value = questionType.toUpperCase();
+    
+    // Show/hide MCQ options
+    if (mcqOptions) {
+        if (questionType === 'mcq') {
+            mcqOptions.style.display = 'block';
+        } else {
+            mcqOptions.style.display = 'none';
+        }
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    toggleMCQOptions();
+});
+</script>
+{% endblock %}

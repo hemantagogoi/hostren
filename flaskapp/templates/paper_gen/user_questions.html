@@ -1,0 +1,445 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block header_title %}Manage Questions - {{ subject.name }} (Unit {{ unit.chapter_no }}){% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Add New Question - {{ subject.name }} (Unit {{ unit.chapter_no }})</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="question">Question</label>
+            <textarea id="question" name="question" rows="4" placeholder="Enter your question text here..." required></textarea>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="mark">Marks</label>
+                <input type="number" id="mark" name="mark" value="2" min="1" max="100">
+            </div>
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level</label>
+                <select id="difficulty" name="difficulty">
+                    {% for d in difficulties %}
+                    <option value="{{ d }}">{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cognitive">Cognitive Level</label>
+                <select id="cognitive" name="cognitive">
+                    {% for c in cognitive_levels %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="question_type">Question Type</label>
+                <select id="question_type" name="question_type">
+                    {% for t in question_types %}
+                    <option value="{{ t }}">{{ t.upper() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="checkbox-label">
+                <input type="checkbox" name="imp" value="yes"> Mark as Important Question
+            </label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">
+            <i class="icon">+</i> Add Question
+        </button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Questions in Unit {{ unit.chapter_no }}</h2>
+    
+    {% if questions %}
+    <div class="questions-summary">
+        <div class="summary-item">
+            <span class="label">Total Questions:</span>
+            <span class="value">{{ questions|length }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Subjective:</span>
+            <span class="value">{{ questions|selectattr('question_type.name', 'equalto', 'sub')|list|length }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">MCQ:</span>
+            <span class="value">{{ questions|selectattr('question_type.name', 'equalto', 'mcq')|list|length }}</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">Important:</span>
+            <span class="value">{{ questions|selectattr('imp')|list|length }}</span>
+        </div>
+    </div>
+
+    <div class="questions-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Marks</th>
+                    <th>Difficulty</th>
+                    <th>Type</th>
+                    <th>Important</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <td class="id-cell">{{ q.id }}</td>
+                    <td class="question-cell">
+                        <div class="question-text">{{ q.question.question }}</div>
+                        {% if q.imp %}<span class="important-badge">Important</span>{% endif %}
+                    </td>
+                    <td class="marks-cell">{{ q.mark }}</td>
+                    <td class="difficulty-cell">
+                        <span class="difficulty-badge difficulty-{{ q.difficulty.name|lower }}">
+                            {{ q.difficulty.name }}
+                        </span>
+                    </td>
+                    <td class="type-cell">
+                        <span class="type-badge type-{{ q.question_type.name|lower }}">
+                            {{ q.question_type.name.upper() }}
+                        </span>
+                    </td>
+                    <td class="important-cell">
+                        {% if q.imp %}
+                            <span class="important-yes">✓</span>
+                        {% else %}
+                            <span class="important-no">-</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-cell">
+                        <a href="{{ url_for('paper_gen.delete_question_from_paper', question_id=q.id) }}" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this question?');">
+                            <i class="icon">🗑</i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3>No Questions Yet</h3>
+        <p>Start adding questions to this unit using the form above. Questions will appear here once you add them.</p>
+    </div>
+    {% endif %}
+</div>
+
+<div class="navigation">
+    <a href="{{ url_for('paper_gen.manage_units_for_paper', subject_id=subject.id) }}" class="btn btn-secondary">
+        <i class="icon">←</i> Back to Units
+    </a>
+    <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">
+        <i class="icon">⚙️</i> Configure Paper
+    </a>
+</div>
+
+<style>
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.questions-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-item .label {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.summary-item .value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #495057;
+}
+
+.questions-table {
+    overflow-x: auto;
+}
+
+.questions-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.questions-table th,
+.questions-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.questions-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+}
+
+.questions-table tr:hover {
+    background: #f8f9fa;
+}
+
+.id-cell {
+    font-weight: 600;
+    color: #6c757d;
+    min-width: 60px;
+}
+
+.question-cell {
+    max-width: 400px;
+    word-wrap: break-word;
+}
+
+.question-text {
+    line-height: 1.5;
+}
+
+.important-badge {
+    display: inline-block;
+    background: #ffc107;
+    color: #212529;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.marks-cell {
+    font-weight: 600;
+    min-width: 80px;
+}
+
+.difficulty-cell {
+    min-width: 100px;
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.difficulty-easy {
+    background: #d4edda;
+    color: #155724;
+}
+
+.difficulty-medium {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.difficulty-hard {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.type-cell {
+    min-width: 80px;
+}
+
+.type-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.type-sub {
+    background: #e3f2fd;
+    color: #004085;
+}
+
+.type-mcq {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.important-cell {
+    text-align: center;
+    min-width: 80px;
+}
+
+.important-yes {
+    color: #28a745;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.important-no {
+    color: #6c757d;
+}
+
+.actions-cell {
+    min-width: 120px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.empty-state p {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.navigation {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .questions-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .navigation {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

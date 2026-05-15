@@ -19,17 +19,23 @@
         <div class="paper-header">
             <h2>{{ config.name }}</h2>
             <p><strong>{{ config.term }}</strong></p>
-            <p>Subject: {{ subject.name }} | Time: {{ config.time_limit }} | Marks: {{ config.total_marks }}</p>
+            <p>Subject: {{ subject.name }} | Time: {{ config.time_limit }} | Marks: {{ actual_total or config.total_marks }}</p>
             <p>Date: {{ config.exam_date }}</p>
         </div>
 
-        {% for mark, questions in questions_by_mark.items() %}
+        {% for section_letter, questions in questions_by_section.items() %}
         <div class="question-section">
-            <h4>{{ mark }} Mark Questions ({{ questions|length }} x {{ mark }} = {{ questions|length * mark }} marks)</h4>
+            <h4>{{ section_names[section_letter] }}</h4>
+            <div class="section-info">
+                <small>Questions: {{ questions|length }} | Total Marks: {{ questions|length * questions[0].mark }}</small>
+            </div>
             {% for q in questions %}
             <div class="question-item">
                 <strong>Q{{ loop.index }}.</strong> {{ q.question.question }}
-                <span style="float: right; color: #666;">[{{ q.difficulty.name }}]</span>
+                <span style="float: right; color: #666;">[{{ q.difficulty.name }}] {{ q.mark }} marks</span>
+                <div style="margin-top: 0.5rem; font-size: 0.9em; color: #555;">
+                    <small>Unit: {{ q.unit.name or 'Unit ' + q.unit.chapter_no|string }}</small>
+                </div>
             </div>
             {% endfor %}
         </div>

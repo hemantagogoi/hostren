@@ -101,16 +101,19 @@
         </ol>
     </div>
 
-    {% for mark, questions in questions_by_mark.items() %}
+    {% for section_letter, questions in questions_by_section.items() %}
     <div class="section">
         <div class="section-title">
-            Section ({{ mark }} Mark Questions)
-            <span class="marks">{{ questions|length }} x {{ mark }} = {{ questions|length * mark }} Marks</span>
+            {{ section_names[section_letter] }}
+            <span class="marks">{{ questions|length }} Questions = {{ questions|length * questions[0].mark }} Marks</span>
         </div>
         {% for q in questions %}
         <div class="question">
             <span class="question-number">Q{{ loop.index }}.</span>
-            <span class="question-text">{{ q.question.question }} <span class="marks">[{{ mark }}]</span></span>
+            <span class="question-text">{{ q.question.question }} <span class="marks">[{{ q.mark }}]</span></span>
+            <div style="font-size: 0.8em; color: #666; margin-top: 0.25rem;">
+                Unit: {{ q.unit.name or 'Unit ' + q.unit.chapter_no|string }}
+            </div>
         </div>
         {% endfor %}
     </div>

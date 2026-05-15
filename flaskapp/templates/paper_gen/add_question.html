@@ -1,0 +1,205 @@
+{% extends "paper_gen/base.html" %}
+
+{% block title %}Add Question to Paper{% endblock %}
+{% block header_title %}Add Question to Paper{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="progress-bar">
+        <div class="step completed">1</div>
+        <div class="step completed">2</div>
+        <div class="step completed">3</div>
+        <div class="step completed">4</div>
+        <div class="step active">5</div>
+    </div>
+
+    <h2>Add Question - {{ subject.name }}</h2>
+    
+    <div class="back-link" style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">&larr; Back to Configure Paper</a>
+    </div>
+
+    <!-- Question Type Selection -->
+    {% if not form %}
+    <div class="question-type-selection">
+        <h3>Select Question Type</h3>
+        <div class="type-buttons" style="display: flex; gap: 1rem; margin: 1.5rem 0;">
+            <a href="{{ url_for('paper_gen.add_question_to_paper', subject_id=subject.id, question_type='sub') }}" 
+               class="btn btn-primary btn-lg">
+                Subjective Question
+            </a>
+            <a href="{{ url_for('paper_gen.add_question_to_paper', subject_id=subject.id, question_type='mcq') }}" 
+               class="btn btn-info btn-lg">
+                Multiple Choice Question (MCQ)
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <!-- Question Form -->
+    <form method="POST">
+        <input type="hidden" name="question_type" value="{{ question_type }}">
+        
+        <div class="form-group">
+            <label for="unit_id">Select Unit/Chapter</label>
+            <select id="unit_id" name="unit_id" class="form-control" required>
+                <option value="">-- Select Unit --</option>
+                {% for unit in units %}
+                <option value="{{ unit.id }}">
+                    {{ unit.name or 'Unit ' + unit.chapter_no|string }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {% if question_type == 'mcq' %}
+        <div class="mcq-form">
+            <h4>Multiple Choice Question</h4>
+            
+            <div class="form-group">
+                <label for="question">Question</label>
+                {{ form.question(class="form-control", rows="4") }}
+                {% if form.question.errors %}
+                    <div class="text-danger">
+                        {% for error in form.question.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="options-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="option1">Option 1</label>
+                    {{ form.option1(class="form-control") }}
+                    {% if form.option1.errors %}
+                        <div class="text-danger">
+                            {% for error in form.option1.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option2">Option 2</label>
+                    {{ form.option2(class="form-control") }}
+                    {% if form.option2.errors %}
+                        <div class="text-danger">
+                            {% for error in form.option2.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option3">Option 3</label>
+                    {{ form.option3(class="form-control") }}
+                    {% if form.option3.errors %}
+                        <div class="text-danger">
+                            {% for error in form.option3.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="option4">Option 4</label>
+                    {{ form.option4(class="form-control") }}
+                    {% if form.option4.errors %}
+                        <div class="text-danger">
+                            {% for error in form.option4.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="subjective-form">
+            <h4>Subjective Question</h4>
+            
+            <div class="form-group">
+                <label for="question">Question</label>
+                {{ form.question(class="form-control", rows="6") }}
+                {% if form.question.errors %}
+                    <div class="text-danger">
+                        {% for error in form.question.errors %}
+                            <small>{{ error }}</small>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Common Fields -->
+        <div class="common-fields" style="margin-top: 2rem;">
+            <h4>Question Properties</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div class="form-group">
+                    <label for="mark">Marks</label>
+                    {{ form.mark(class="form-control") }}
+                    {% if form.mark.errors %}
+                        <div class="text-danger">
+                            {% for error in form.mark.errors %}
+                                <small>{{ error }}</small>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    {{ form.difficulty(class="form-control") }}
+                </div>
+                <div class="form-group">
+                    <label for="cognitive_level">Cognitive Level</label>
+                    {{ form.cognitive_level(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+                <div class="form-check">
+                    {{ form.imp(class="form-check-input") }}
+                    <label for="imp" class="form-check-label">Mark as Important (IMP)</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions" style="margin-top: 2rem;">
+            <a href="{{ url_for('paper_gen.configure_paper', subject_id=subject.id) }}" class="btn btn-secondary">Cancel</a>
+            {{ form.submit(class="btn btn-success") }}
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<style>
+.question-type-selection {
+    text-align: center;
+    padding: 2rem;
+}
+
+.type-buttons .btn {
+    padding: 1rem 2rem;
+    min-width: 200px;
+}
+
+.options-grid {
+    margin: 1.5rem 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.form-check {
+    padding: 0.5rem 0;
+}
+
+.form-check-input {
+    margin-right: 0.5rem;
+}
+</style>
+{% endblock %}

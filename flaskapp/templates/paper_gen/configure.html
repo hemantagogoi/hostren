@@ -13,7 +13,20 @@
         <div class="step active">5</div>
     </div>
 
-    <h2>Configure Question Paper - {{ subject.name }}</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Configure Question Paper - {{ subject.name }}</h2>
+        {% if subject.units %}
+        <a href="{{ url_for('paper_gen.manage_questions_for_unit', unit_id=subject.units[0].id) }}" 
+           class="btn btn-success">
+            <i>+</i> Manage Questions
+        </a>
+        {% else %}
+        <a href="{{ url_for('paper_gen.manage_units_for_paper', subject_id=subject.id) }}" 
+           class="btn btn-warning">
+            <i>+</i> Add Units First
+        </a>
+        {% endif %}
+    </div>
 
     <form method="POST">
         <div class="form-group">
