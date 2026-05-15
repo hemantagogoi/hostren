@@ -22,6 +22,4 @@ services:
 
 databases:
   - name: question-paper-db
-    databaseName: question_paper
-    user: question_paper_user
     plan: free
