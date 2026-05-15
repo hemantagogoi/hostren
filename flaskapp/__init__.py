@@ -46,11 +46,8 @@ def create_app(config_class=Config):
             db.engine.connect()
             app.logger.info("Database connection successful")
         except OperationalError as e:
-            app.logger.error(f"Database connection failed: {e}")
-            if app.config.get('ENV') == 'production':
-                raise RuntimeError("Database connection required in production") from e
-            else:
-                app.logger.warning("Running without database connection in development")
+            app.logger.warning(f"Database connection failed: {e}")
+            app.logger.warning("App will start without database connection")
 
     bcrypt.init_app(app)
     login_manager.init_app(app)
