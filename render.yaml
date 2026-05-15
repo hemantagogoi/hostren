@@ -1,7 +1,6 @@
 services:
   - type: web
     name: question-paper-generator
-    runtime: python-3.11
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
