@@ -14,4 +14,14 @@ services:
         value: "true"
       - key: FLASK_ENV
         value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: question-paper-db
+          property: connectionString
     healthCheckPath: /health
+
+databases:
+  - name: question-paper-db
+    databaseName: question_paper
+    user: question_paper_user
+    plan: free
