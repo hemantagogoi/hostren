@@ -31,6 +31,24 @@ try:
         try:
             db.create_all()
             print("Database tables created successfully")
+            
+            # Create default admin user if none exists
+            from flaskapp.models import Admin
+            from flaskapp import bcrypt
+            admin_count = Admin.query.count()
+            if admin_count == 0:
+                print("No admin user found, creating default admin...")
+                hashed_password = bcrypt.generate_password_hash("admin123").decode('utf-8')
+                default_admin = Admin(
+                    username="admin",
+                    email="admin@qpg.com",
+                    password=hashed_password
+                )
+                db.session.add(default_admin)
+                db.session.commit()
+                print("Default admin user created successfully!")
+                print("Email: admin@qpg.com")
+                print("Password: admin123")
         except Exception as e:
             print(f"Error creating database tables: {e}")
 except Exception as e:
