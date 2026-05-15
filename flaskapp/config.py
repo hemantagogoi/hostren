@@ -52,14 +52,17 @@ class ProductionConfig(Config):
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
     DEBUG = False
     ENV = "production"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///app.db")
     
     def __init__(self):
         super().__init__()
         # Use DATABASE_URL from environment
         database_url = os.environ.get("DATABASE_URL")
         if database_url:
+            # Convert postgres:// to postgresql:// for SQLAlchemy
+            if database_url.startswith("postgres://"):
+                database_url = database_url.replace("postgres://", "postgresql://", 1)
             self.SQLALCHEMY_DATABASE_URI = database_url
-        # If no DATABASE_URL, keep the default from parent class (None)
 
 
 class SupabaseConfig(Config):
